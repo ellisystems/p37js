@@ -18,6 +18,8 @@ export const TestTask = {
   setOpts: function(args) {
     // http://karma-runner.github.io/2.0/config/configuration-file.html
     const config = {};
+    config.client = config.client || {};
+    config.client.mocha = config.client.mocha || {};
     if (args.level || args.verbose) {
       config.logLevel = args.level;
       console.log('DEBUG: args -', args);
@@ -37,11 +39,17 @@ export const TestTask = {
       config.browsers = ['Chrome'];
     }
     if (args.reporter) {
-      config.reporters = [args.reporter];
+      config.reporters = [args.reporter]; // Karma reporter
+    }
+    const mochaReporter = args.mochaReporter || 'html';
+    config.client.mocha.reporter = mochaReporter;
+    if (args.timeout) {
+      config.client.mocha.timeout = args.timeout;
     }
     return config;
   },
   getKarmaConf: function(assigns) {
+
     return Object.assign({}, defaultKarmaConf, assigns || {});
   },
   run: function() {
@@ -92,6 +100,8 @@ gulp.task('test', 'Runs tests', [], function() {
     'watch': '  turn off karma singleRun',
     'chrome': '  run in Chrome browser. Default: headless chrome',
     'reporter': '  karma reporter. Default: progress',
-    'level': '  karma log level error|warn|info|debug . Default: error'
+    'level': '  karma log level error|warn|info|debug . Default: error',
+    'mochaReporter': '  mocha reporter. Default: html',
+    'timeout': '  mocha test timeout. Default: 2000'
   }
 });

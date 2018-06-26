@@ -1,3 +1,13 @@
+import rollupConfig from './rollup.config.js';
+
+function getRollupConfigForTest(config) {
+  config.external = config.external || [];
+  config.output.globals = config.output.globals || {};
+  config.external.push('chai');
+  config.output.globals.chai = 'chai';
+  return config;
+}
+
 module.exports =  {
   frameworks: ['mocha', 'chai'],
   files: ['test/**/*.js'],
@@ -32,5 +42,9 @@ module.exports =  {
     mocha: {
       reporter: 'html'
     }
-  }
+  },
+  preprocessors: {
+    'test/**/*.js': ['rollup']
+  },
+  rollupPreprocessor: getRollupConfigForTest(rollupConfig)
 };
